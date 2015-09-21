@@ -25,6 +25,15 @@
                 "cacheService" : "cp",
                 "expiresInSec" : 60
             }
+        },
+        {
+            "name" : "iot",
+            "module": "caf_iot#plug",
+            "description": "Access to an IoT device",
+            "env": {
+                "iotMethodsFileName" : "../iot/lib/iot_methods.js",
+                "appDir" : null
+            }
         }
     ]
 }

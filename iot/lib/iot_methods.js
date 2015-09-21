@@ -18,13 +18,13 @@ limitations under the License.
 var caf_iot = require('caf_iot');
 
 exports.methods = {
-    'setup' : function(cb) {
+    '__iot_setup__' : function(cb) {
         var lastIndex = this.fromCloud.get('index');
         this.state.index = (lastIndex ? lastIndex : 0);
-
+        cb(null);
     },
 
-    'loop' : function(cb) {
+    '__iot_loop__' : function(cb) {
         var now = (new Date()).getTime();
         this.$.log && this.$.log.debug(now + ' loop:' + JSON);
         this.state.current = now;
