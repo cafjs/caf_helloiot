@@ -26,7 +26,7 @@ exports.methods = {
 
     '__iot_loop__' : function(cb) {
         var now = (new Date()).getTime();
-        this.$.log && this.$.log.debug(now + ' loop:' + JSON);
+        this.$.log && this.$.log.debug(now + ' loop:');
         this.state.current = now;
         this.toCloud.set('index', this.state.index);
         this.state.index = this.state.index  + 1;
