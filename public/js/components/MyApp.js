@@ -20,10 +20,29 @@ var MyApp = {
     _onChange : function(ev) {
         this.setState(AppStore.getState());
     },
+    handleDelayChange: function() {
+        AppActions.setLocalState({
+            delay: this.refs.delay.getValue()
+        });
+    },
+    handleMsgChange: function() {
+        AppActions.setLocalState({
+            msg: this.refs.msg.getValue()
+        });
+    },
+    handleIncrementChange: function() {
+        AppActions.setLocalState({
+            inc: this.refs.inc.getValue()
+        });
+    },
     doIncrement : function(ev) {
-        ev.stopPropagation();
-        var inc = parseInt(document.getElementById('inc').value);
+        var inc = parseInt(this.state.inc);
         AppActions.increment(inc);
+    },
+    doHello : function(ev) {
+        var msg = this.state.msg;
+        var delay = parseInt(this.state.delay);
+        AppActions.iotForceHello(delay, msg);
     },
     render: function() {
         return cE("div", {className: "container-fluid"},
@@ -40,7 +59,7 @@ var MyApp = {
                                                      xs:10,
                                                      className: 'text-right'
                                                  },
-                                                 "Counter Example"
+                                                 "IoT Example"
                                                 ),
                                               cE(rB.Col, {
                                                      sm: 5,
@@ -63,13 +82,51 @@ var MyApp = {
                                 ),
                               cE('div', {className:'clearfix visible-xs'}),
                               cE(rB.Col, { xs:6, sm: 3},
-                                 cE(rB.Input, {type: 'text', id: 'inc',
-                                               defaultValue: '1'})
+                                 cE(rB.Input, {
+                                     type: 'text',
+                                     value: this.state.inc,
+                                     ref: 'inc',
+                                     placeholder: '1',
+                                     onChange : this.handleIncrementChange
+                                 })
                                 ),
                               cE(rB.Col, { xs:6, sm:3},
                                  cE(rB.Button, {onClick: this.doIncrement,
                                                 bsStyle: 'primary'},
                                     'Increment')
+                                )
+                             )
+                          )
+                       ),
+                     cE(rB.Panel, {header: "Force Hello"},
+                        cE(rB.Grid, null,
+                           cE(rB.Row, null,
+                              cE(rB.Col, { xs:6, sm:3},
+                                 cE(rB.Input, {
+                                     type: 'text',
+                                     value: this.state.msg,
+                                     label: 'Message',
+                                     ref: 'msg',
+                                     placeholder: 'type a message',
+                                     onChange: this.handleMsgChange
+                                 })
+                                ),
+                              cE(rB.Col, { xs:6, sm:3},
+                                 cE(rB.Input, {
+                                     type: 'text',
+                                     value: this.state.delay,
+                                     label: 'Delay',
+                                     ref: 'delay',
+                                     placeholder: 'miliseconds',
+                                     onChange: this.handleDelayChange
+                                 })
+                                )
+                             ),
+                           cE(rB.Row, null,
+                              cE(rB.Col, { xs:6, sm:3},
+                                 cE(rB.Button, {onClick: this.doHello,
+                                                bsStyle: 'primary'},
+                                    'Force Hello')
                                 )
                              )
                           )

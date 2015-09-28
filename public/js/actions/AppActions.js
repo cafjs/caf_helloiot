@@ -55,16 +55,26 @@ var AppActions = {
                              cb(err, data);
                          });
     },
-    increment: function(inc) {
-        AppSession.increment(inc, function(err, data) {
-                                 if (err) {
-                                     errorF(err);
-                                 } else {
-                                     updateF(data);
-                                 }
-                             });
+    setLocalState: function(data) {
+        updateF(data);
     }
 };
+
+['iotForceHello', 'increment']
+    .forEach(function(x) {
+        AppActions[x] = function() {
+            var args = Array.prototype.slice.call(arguments);
+            args.push(function(err, data) {
+                if (err) {
+                    errorF(err);
+                } else {
+                    updateF(data);
+                }
+            });
+            AppSession[x].apply(AppSession, args);
+        };
+    });
+
 
 AppSession.onmessage = function(msg) {
     console.log('message:' + JSON.stringify(msg));
