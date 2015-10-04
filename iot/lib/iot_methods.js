@@ -30,6 +30,12 @@ exports.methods = {
         this.state.current = now;
         this.toCloud.set('index', this.state.index);
         this.state.index = this.state.index  + 1;
+        this.$.log && this.$.log.debug('actuateX:' +
+                                       this.fromCloud.get('actuateX'));
+        this.$.log && this.$.log.debug('actuateY:' +
+                                       this.fromCloud.get('actuateY'));
+        this.toCloud.set('sensorX', now);
+        this.toCloud.set('sensorY', now+1);
         cb(null);
     },
 
