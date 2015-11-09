@@ -2,6 +2,7 @@ var AppDispatcher = require('../dispatcher/AppDispatcher');
 var AppConstants = require('../constants/AppConstants');
 var AppSession = require('../session/AppSession');
 var json_rpc = require('caf_transport').json_rpc;
+var caf_cli =  require('caf_cli');
 
 var updateF = function(state) {
     var d = {
@@ -46,6 +47,7 @@ var AppActions = {
     },
     init: function(cb) {
         AppSession.hello(AppSession.getCacheKey(),
+                         caf_cli.extractTokenFromURL(window.location.href),
                          function(err, data) {
                              if (err) {
                                  errorF(err);

@@ -32,6 +32,7 @@
             "description": "Access to an IoT device",
             "env": {
                 "iotMethodsFileName" : "../iot/lib/iot_methods.js",
+                "iotDeviceManagerAppURL" :"process.env.IOT_DEVICE_MANAGER_APP_URL||https://root-gadget.cafjs.com",
                 "appDir" : null
             }
         }
