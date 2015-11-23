@@ -60,6 +60,11 @@ exports.methods = {
                 cb(null);
             }
         }, 1000);
+    },
+
+    'haltAndRestart' : function(afterSec, cb) {
+        this.$.nap.haltAndRestart(afterSec);
+        cb(null);
     }
 };
 

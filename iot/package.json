@@ -1,7 +1,7 @@
 {
   "name": "caf_iot_helloiot",
   "description": "Cloud Assistants IoT example (Device)",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": "Antonio Lain <antlai@cafjs.com>",
   "dependencies": {
       "caf_iot" : "^0.2.0",
