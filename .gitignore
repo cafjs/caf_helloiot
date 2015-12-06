@@ -1,6 +1,7 @@
 *~
 node_modules
-*.tgz
 coverage
-
-
+build.js
+build.min.js
+*.tgz
+iot/npm-shrinkwrap.json
