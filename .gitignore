@@ -4,4 +4,4 @@ coverage
 build.js
 build.min.js
 *.tgz
-iot/npm-shrinkwrap.json
+
