@@ -59,12 +59,18 @@ var AppActions = {
     },
     setLocalState: function(data) {
         updateF(data);
+    },
+    resetError: function() {
+        errorF(null);
+    },
+    setError: function(err) {
+        errorF(err);
     }
 };
 
-['iotForceHello', 'increment']
-    .forEach(function(x) {
-        AppActions[x] = function() {
+['changePinMode', 'changePinValue', 'deletePin','iotForceHaltAndRestart',
+ 'getState'].forEach(function(x) {
+     AppActions[x] = function() {
             var args = Array.prototype.slice.call(arguments);
             args.push(function(err, data) {
                 if (err) {
@@ -80,7 +86,8 @@ var AppActions = {
 
 AppSession.onmessage = function(msg) {
     console.log('message:' + JSON.stringify(msg));
-    notifyF(msg);
+    AppActions.getState();
+    //notifyF(msg);
 };
 
 AppSession.onclose = function(err) {

@@ -15,8 +15,30 @@
                 {
                     "name": "log",
                     "env" : {
-                        "logLevel" : "TRACE"
+                        "logLevel" : "DEBUG"
                     }
+                },
+                {
+                    "module": "caf_rpi_gpio#plug_iot",
+                    "name": "gpio",
+                    "description": "Access to GPIO pins for this device.",
+                    "env" : {
+                        "maxRetries" : "$._.env.maxRetries",
+                        "retryDelay" : "$._.env.retryDelay",
+                        "gpiomem" : "process.env.GPIO_MEM||true",
+                        "mapping" : "process.env.MAPPING||physical",
+                        "allowMock" : "process.env.ALLOW_MOCK||true",
+                        "mockRootDir" : "process.env.MOCK_ROOT_DIR||/tmp/gpio"
+                    },
+                    "components" : [
+                        {
+                            "module": "caf_rpi_gpio#proxy_iot",
+                            "name": "proxy",
+                            "description": "Proxy to access GPIO pins",
+                            "env" : {
+                            }
+                        }
+                    ]
                 }
             ]
         }

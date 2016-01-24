@@ -4,16 +4,24 @@ var caf_cli = require('caf_cli');
 var fs = require('fs');
 var path = require('path');
 
-var token = fs.readFileSync(path.resolve(__dirname, '../iot/lib/token'),
-                            {encoding:'utf8'}).trim();
-var beforeSec = parseInt(process.argv[2]);
+if (process.argv.length !== 6) {
+    console.log('Usage: forceHaltAndRestart <tokenFile> <deviceName> <beforeSec> <afterSec>');
+    process.exit(1);
+}
 
-var afterSec = parseInt(process.argv[3]);
+var token = fs.readFileSync(path.resolve(__dirname, process.argv[2]),
+                            {encoding:'utf8'}).trim();
+
+var deviceName = process.argv[3];
+
+var beforeSec = parseInt(process.argv[4]);
+
+var afterSec = parseInt(process.argv[5]);
 
 var caURL = 'https://root-helloiot.cafjs.com';
 
-var cli = new caf_cli.Session(caURL, 'foo-ca1', {
-            from : 'foo-ca1',
+var cli = new caf_cli.Session(caURL, deviceName, {
+            from : deviceName,
             token : token,
             session : 'default',
             log: function(msg) {

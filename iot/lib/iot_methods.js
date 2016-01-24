@@ -19,47 +19,37 @@ var caf_iot = require('caf_iot');
 
 exports.methods = {
     '__iot_setup__' : function(cb) {
-        var lastIndex = this.fromCloud.get('index');
+        // value of 'index' from last run downloaded from the cloud
+        var lastIndex = this.toCloud.get('index');
         this.state.index = (lastIndex ? lastIndex : 0);
         cb(null);
     },
 
     '__iot_loop__' : function(cb) {
-        var now = (new Date()).getTime();
-        this.$.log && this.$.log.debug(now + ' loop:');
-        this.state.current = now;
+        this.$.log && this.$.log.debug(JSON.stringify(this
+                                                      .fromCloud.get('meta')));
+        this.$.gpio.setPinConfig(this.fromCloud.get('meta') || {});
+        this.$.log && this.$.log.debug(JSON.stringify(this
+                                                      .fromCloud.get('out')));
+        this.$.gpio.writeMany(this.fromCloud.get('out') || {});
+        this.toCloud.set('in', this.$.gpio.readAll());
+ 
         this.toCloud.set('index', this.state.index);
         this.state.index = this.state.index  + 1;
-        this.$.log && this.$.log.debug('actuateX:' +
-                                       this.fromCloud.get('actuateX'));
-        this.$.log && this.$.log.debug('actuateY:' +
-                                       this.fromCloud.get('actuateY'));
-        this.toCloud.set('sensorX', now);
-        this.toCloud.set('sensorY', now+1);
+        var now = (new Date()).getTime();
+        this.$.log && this.$.log.debug(now + ' loop:' + this.state.index);
+
         cb(null);
     },
 
-    'hello' : function(name, cb) {
+    'setPin' : function(pin, value, cb) {
         var now = (new Date()).getTime();
-        this.state.current = now;
-        this.$.log && this.$.log.debug(now + ' hello:' + name);
+        this.$.log && this.$.log.debug(now + ' setPin:' + pin + ' value:' +
+                                       value);
+        var pins = {};
+        pins[pin] = value;
+        this.$.gpio.writeMany(pins);
         cb(null);
-    },
-
-    'bye' : function(name, cb) {
-        var self = this;
-        var now = (new Date()).getTime();
-        this.state.current = now;
-        this.$.log && this.$.log.debug(now + ' bye1:' + name);
-        setTimeout(function() {
-            if (self.state.current !== now) {
-                cb(new Error('BUG!: Found race current !== now'));
-            } else {
-                now = (new Date()).getTime();
-                self.$.log && self.$.log.debug(now + ' bye2:' + name);
-                cb(null);
-            }
-        }, 1000);
     },
 
     'haltAndRestart' : function(afterSec, cb) {
