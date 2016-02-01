@@ -48,7 +48,8 @@
                     "name": "props",
                     "env" : {
                         "resistorPullUp": "process.env.RESISTOR_PULL_UP||true",
-                        "initialStateHigh": "process.env.INITIAL_STATE_HIGH||false"
+                        "initialStateHigh": "process.env.INITIAL_STATE_HIGH||false",
+                        "margin" : "process.env.MARGIN||200"
                     }
                 }
             ]

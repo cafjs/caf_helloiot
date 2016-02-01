@@ -50,16 +50,25 @@ var MyApp = {
                                 )
                   },
                      cE(rB.Panel, {header: "Pins"},
-                        cE(Pins, {pinNumber: this.state.pinNumber,
-                                  pinMode: this.state.pinMode,
-                                  pinOutputsValue: this.state.pinOutputsValue,
-                                  pinInputsValue: this.state.pinInputsValue})),
+                        cE(Pins, {
+                            pinNumber: this.state.pinNumber,
+                            pinMode: this.state.pinMode,
+                            pinOutputsValue: this.state.pinOutputsValue,
+                            pinInputsValue: this.state.pinInputsValue
+                        })),
                      cE(rB.Panel, {header: "Bundles"},
-                        cE(Bundles, {bundleMethods: this.state.bundleMethods,
-                                     bundles: this.state.bundles})),
+                        cE(Bundles, {
+                            bundleIdEditor: this.state.bundleIdEditor,
+                            bundleMethods: this.state.bundleMethods,
+                            bundles: this.state.bundles
+                        })),
                      cE(rB.Panel, {header: "Triggers"},
-                        cE(Triggers, { bundles: this.state.bundles,
-                                       triggers: this.state.triggers})),
+                        cE(Triggers, {
+                            bundles: this.state.bundles,
+                            triggers: this.state.triggers,
+                            triggerBundleId: this.state.triggerBundleId,
+                            triggerDelay: this.state.triggerDelay
+                        })),
                      cE(rB.Panel, {header: "Power Management"},
                         cE(Power, {power: this.state.power})
                        )
