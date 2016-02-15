@@ -16,7 +16,7 @@ var Triggers = {
     },
     doRun: function() {
         var bundleId = this.refs.triggerBundleId.getValue();
-        var bundle = this.props.bundles(bundleId);
+        var bundle = this.props.bundles[bundleId];
         if (bundle) {
             var delay = parseInt(this.refs.triggerDelay.getValue());
             if (isNaN(delay)) {
@@ -24,7 +24,7 @@ var Triggers = {
                                               this.refs.triggerDelay
                                               .getValue()));
             } else {
-                AppActions.scheduleBundle(bundle, delay);
+                AppActions.scheduleBundle(bundleId, delay);
             }
         } else {
             AppActions.setError(new Error('Invalid bundle id:' + bundleId));
@@ -38,20 +38,20 @@ var Triggers = {
                         cE(rB.Input, {
                             type: 'text',
                             ref: 'triggerBundleId',
-                            label: 'Bundle',
+//                            label: 'Bundle',
                             value: this.props.triggerBundleId,
                             onChange: this.handleTriggerBundleId,
-                            placeholder: 'bundle Id'
+                            placeholder: 'Bundle Id'
                         })
                        ),
                      cE(rB.Col, {sm:4, xs:12},
                         cE(rB.Input, {
                             type: 'text',
                             ref: 'triggerDelay',
-                            label: 'Delay',
+//                            label: 'Delay',
                             value: this.props.triggerDelay,
                             onChange: this.handleTriggerDelay,
-                            placeholder: '-1 or #msec'
+                            placeholder: 'Delay (-1 or #msec)'
                         })
                        ),
                      cE(rB.Col, {sm:4, xs:12},

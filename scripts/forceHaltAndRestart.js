@@ -18,7 +18,7 @@ var beforeSec = parseInt(process.argv[4]);
 
 var afterSec = parseInt(process.argv[5]);
 
-var caURL = 'https://root-helloiot.cafjs.com';
+var caURL = 'http://root-helloiot.vcap.me';
 
 var cli = new caf_cli.Session(caURL, deviceName, {
             from : deviceName,

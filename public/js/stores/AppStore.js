@@ -9,8 +9,8 @@ var newAppStore = function() {
     var server = new EventEmitter2();
 
     var state = {pinMode: {}, pinInputsValue:{}, pinOutputsValue:{},
-                 bundleMethods:[], bundles:[], triggers:[], power: {},
-                 isClosed: false};
+                 bundleMethods:[], bundles:[], bundleEditor: null,
+                 triggers:[], power: {}, isClosed: false};
 
     var that = {};
 

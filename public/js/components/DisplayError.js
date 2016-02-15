@@ -10,7 +10,7 @@ var DisplayError = {
     },
 
     render: function() {
-        return cE(rB.Modal,{show: this.props.error,
+        return cE(rB.Modal,{show: (this.props.error ? true : false),
                             onHide: this.doDismissError,
                             animation: false},
                   cE(rB.Modal.Header, {
@@ -19,10 +19,9 @@ var DisplayError = {
                      cE(rB.Modal.Title, null, "Error")
                     ),
                   cE(rB.ModalBody, null,
-                     cE('p', null, 'Message:',
-                        cE(rB.Alert, {bsStyle: 'danger'},
-                           this.props.error && this.props.error.message)
-                       )
+                     cE('p', null, 'Message:'),
+                     cE(rB.Alert, {bsStyle: 'danger'},
+                        this.props.error && this.props.error.message)
                     ),
                   cE(rB.Modal.Footer, null,
                      cE(rB.Button, {onClick: this.doDismissError}, "Continue")

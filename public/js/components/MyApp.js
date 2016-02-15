@@ -58,8 +58,9 @@ var MyApp = {
                         })),
                      cE(rB.Panel, {header: "Bundles"},
                         cE(Bundles, {
-                            bundleIdEditor: this.state.bundleIdEditor,
-                            bundleMethods: this.state.bundleMethods,
+                            bundleEditor: this.state.bundleEditor,
+                            bundleId: this.state.bundleId,
+                            bundleMethods: this.state.iotMethodsMeta,
                             bundles: this.state.bundles
                         })),
                      cE(rB.Panel, {header: "Triggers"},

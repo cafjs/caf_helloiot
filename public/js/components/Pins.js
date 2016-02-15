@@ -12,10 +12,11 @@ var renderInputs = function(pinMode, pinInputsValue) {
             .sort(function(a, b) {
                 return a - b;
             });
-    return cE(rB.ButtonGroup, null, sortedKeys.map(function(x) {
+    return cE(rB.ButtonGroup, null, sortedKeys.map(function(x, i) {
         var color =  (typeof pinInputsValue[x] === 'boolean' ?
                       (pinInputsValue[x] ? 'danger' : 'primary') : 'default');
-        return cE(rB.Button, {bsStyle : color, disabled: true}, x);
+        return cE(rB.Button, {bsStyle : color, disabled: true, key: 9888*(i+1)},
+                  x);
     }));
 };
 
@@ -39,9 +40,11 @@ var renderOutputs = function(pinMode, pinOutputsValue) {
         };
         var color = (typeof pinOutputsValue[x] === 'boolean' ?
                      (pinOutputsValue[x] ? 'danger': 'primary') :
-                     (pinMode[x].initialState.high ? 'danger': 'primary'));        
+                     (pinMode[x].initialState.high ? 'danger': 'primary'));
+
         return cE(rB.DropdownButton, {
-            onSelect: onSelect, bsStyle : color, title: x
+            onSelect: onSelect, bsStyle : color, title: x, id: 'dropdown-' + x,
+            key:12121
         }, ['HIGH', 'LOW'].map(function(value, i) {
             return cE(rB.MenuItem, {
                 key:i*232131 + j*17,
