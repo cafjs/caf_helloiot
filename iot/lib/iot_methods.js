@@ -26,6 +26,8 @@ exports.methods = {
     },
 
     '__iot_loop__' : function(cb) {
+        this.$.log && this.$.log.debug('Time offset ' + this.$.cloud.cli
+                                       .getEstimatedTimeOffset());
         this.$.log && this.$.log.debug(JSON.stringify(this
                                                       .fromCloud.get('meta')));
         this.$.gpio.setPinConfig(this.fromCloud.get('meta') || {});
