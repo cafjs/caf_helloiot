@@ -69,10 +69,7 @@ var MyApp = {
                             triggers: this.state.triggers,
                             triggerBundleId: this.state.triggerBundleId,
                             triggerDelay: this.state.triggerDelay
-                        })),
-                     cE(rB.Panel, {header: "Power Management"},
-                        cE(Power, {power: this.state.power})
-                       )
+                        }))
                     )
                  );
     }

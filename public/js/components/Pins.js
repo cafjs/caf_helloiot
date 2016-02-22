@@ -44,7 +44,7 @@ var renderOutputs = function(pinMode, pinOutputsValue) {
 
         return cE(rB.DropdownButton, {
             onSelect: onSelect, bsStyle : color, title: x, id: 'dropdown-' + x,
-            key:12121
+            key:1212177*(j+1)
         }, ['HIGH', 'LOW'].map(function(value, i) {
             return cE(rB.MenuItem, {
                 key:i*232131 + j*17,
