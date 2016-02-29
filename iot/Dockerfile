@@ -8,4 +8,6 @@
 
 FROM registry.cafjs.com:32000/root-rpi2armhf
 
-CMD [ "npm", "start" ]
+ENTRYPOINT ["node"]
+
+CMD [ "./index.js" ]
