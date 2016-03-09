@@ -14,6 +14,8 @@ var newAppStore = function() {
 
     var that = {};
 
+    var lastLateBundleDismissed = -1;
+    
     var emitChange = function() {
         server.emit(CHANGE_EVENT);
     };
@@ -35,10 +37,28 @@ var newAppStore = function() {
             .forEach(function(key) { state[key] = newState[key]; });
     };
 
+    var lateBundle = function() {
+        if (lastLateBundleDismissed !== state.lastBundleIndex) {
+            var acks = state.acks || [];
+            return acks.some(function(x) {
+                return ((x.index === state.lastBundleIndex) && (!x.result));
+            });
+        } else {
+            return false;
+        }
+
+    };
+    
     var f = function(action) {
         switch(action.actionType) {
         case AppConstants.APP_UPDATE:
             mixinState(action.state);
+            if (lateBundle()) {
+                lastLateBundleDismissed = state.lastBundleIndex;
+                state.error = new Error('The last bundle was late, and it ' +
+                                        'was ignored by the device. Please, ' +
+                                        'increase the delay');
+            }
             emitChange();
             break;
         case AppConstants.APP_NOTIFICATION:
