@@ -5,7 +5,8 @@ var AppStore = require('../stores/AppStore');
 var AppActions = require('../actions/AppActions');
 var Pins = require('./Pins');
 var Bundles = require('./Bundles');
-var Triggers = require('./Triggers');
+var Events = require('./Events');
+var Listeners = require('./Listeners');
 var Power = require('./Power');
 var AppStatus = require('./AppStatus');
 var DisplayError = require('./DisplayError');
@@ -63,12 +64,17 @@ var MyApp = {
                             bundleMethods: this.state.iotMethodsMeta,
                             bundles: this.state.bundles
                         })),
-                     cE(rB.Panel, {header: "Triggers"},
-                        cE(Triggers, {
-                            bundles: this.state.bundles,
-                            triggers: this.state.triggers,
-                            triggerBundleId: this.state.triggerBundleId,
-                            triggerDelay: this.state.triggerDelay
+                     cE(rB.Panel, {header: "Events"},
+                        cE(Events, {
+                            eventLabel: this.state.eventLabel,
+                            eventDelay: this.state.eventDelay
+                        })),
+                     cE(rB.Panel, {header: "Listeners"},
+                        cE(Listeners, {
+                            listenerEditor: this.state.listenerEditor,
+                            listenerId : this.state.listenerId,
+                            listeners: this.state.listeners,
+                            bundles: this.state.bundles
                         }))
                     )
                  );

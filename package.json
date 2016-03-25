@@ -27,7 +27,8 @@
         "build-js" : "browserify  -d public/js/main.js -o public/js/build.js",
         "build-min-js" : "export NODE_ENV=production; browserify public/js/main.js | uglifyjs > public/js/build.min.js",
         "build-iot" : "cd iot;  if test -f all.tgz; then tar xvf all.tgz; fi; rm -f *.tgz; rm -f npm-shrinkwrap.json; npm install --production; npm shrinkwrap;  npm pack; cp *.tgz ../public/iot.tgz; rm -fr node_modules/*;",
-        "build": "npm run build-js && npm run build-min-js && npm run build-iot"
+        "build-app" : "npm run build-js && npm run build-min-js",
+        "build": "npm run build-app && npm run build-iot"
     },
    "main": "index",
   "engines": { "node": ">= 0.10.29" }
