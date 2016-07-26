@@ -68,7 +68,7 @@ var AppActions = {
     }
 };
 
-['changePinMode', 'changePinValue', 'deletePin','iotForceHaltAndRestart',
+['changePinMode', 'changePinValue', 'deletePin',
  'getState','addBundle', 'removeBundle','scheduleBundle','addListener',
  'removeListener', 'triggerEvent'].forEach(function(x) {
      AppActions[x] = function() {

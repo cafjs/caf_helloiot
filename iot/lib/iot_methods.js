@@ -35,7 +35,7 @@ exports.methods = {
                                                       .fromCloud.get('out')));
         this.$.gpio.writeMany(this.fromCloud.get('out') || {});
         this.toCloud.set('in', this.$.gpio.readAll());
- 
+
         this.toCloud.set('index', this.state.index);
         this.state.index = this.state.index  + 1;
         var now = (new Date()).getTime();
@@ -51,11 +51,6 @@ exports.methods = {
         var pins = {};
         pins[pin] = value;
         this.$.gpio.writeMany(pins);
-        cb(null);
-    },
-
-    'haltAndRestart' : function(afterSec, cb) {
-        this.$.nap.haltAndRestart(afterSec);
         cb(null);
     }
 };
