@@ -1,100 +1,93 @@
-var AppDispatcher = require('../dispatcher/AppDispatcher');
 var AppConstants = require('../constants/AppConstants');
-var AppSession = require('../session/AppSession');
 var json_rpc = require('caf_transport').json_rpc;
 var caf_cli =  require('caf_cli');
 
-var updateF = function(state) {
+var updateF = function(store, state) {
     var d = {
-        actionType: AppConstants.APP_UPDATE,
+        type: AppConstants.APP_UPDATE,
         state: state
     };
-    AppDispatcher.dispatch(d);
+    store.dispatch(d);
 };
 
-
-var errorF =  function(err) {
+var errorF =  function(store, err) {
     var d = {
-        actionType: AppConstants.APP_ERROR,
+        type: AppConstants.APP_ERROR,
         error: err
     };
-    AppDispatcher.dispatch(d);
+    store.dispatch(d);
 };
 
-var getNotifData = function(msg) {
-    return json_rpc.getMethodArgs(msg)[0];
-};
+var notifyF = function(store, message) {
+    var getNotifData = function(msg) {
+        return json_rpc.getMethodArgs(msg)[0];
+    };
 
-var notifyF = function(message) {
     var d = {
-        actionType: AppConstants.APP_NOTIFICATION,
+        type: AppConstants.APP_NOTIFICATION,
         state: getNotifData(message)
     };
-    AppDispatcher.dispatch(d);
+    store.dispatch(d);
 };
 
-var wsStatusF =  function(isClosed) {
+var wsStatusF =  function(store, isClosed) {
     var d = {
-        actionType: AppConstants.WS_STATUS,
+        type: AppConstants.WS_STATUS,
         isClosed: isClosed
     };
-    AppDispatcher.dispatch(d);
+    store.dispatch(d);
 };
 
 var AppActions = {
-    initServer: function(initialData) {
-        updateF(initialData);
+    initServer: function(ctx, initialData) {
+        updateF(ctx.store, initialData);
     },
-    init: function(cb) {
-        AppSession.hello(AppSession.getCacheKey(),
-                         caf_cli.extractTokenFromURL(window.location.href),
-                         function(err, data) {
-                             if (err) {
-                                 errorF(err);
-                             } else {
-                                 updateF(data);
-                             }
-                             cb(err, data);
-                         });
+    init: function(ctx, cb) {
+        var tok =  caf_cli.extractTokenFromURL(window.location.href);
+        ctx.session.hello(ctx.session.getCacheKey(), tok, function(err, data) {
+            if (err) {
+                errorF(ctx.store, err);
+            } else {
+                updateF(ctx.store, data);
+            }
+            cb(err, data);
+        });
     },
-    setLocalState: function(data) {
-        updateF(data);
+    setLocalState: function(ctx, data) {
+        updateF(ctx.store, data);
     },
-    resetError: function() {
-        errorF(null);
+    resetError: function(ctx) {
+        errorF(ctx.store, null);
     },
-    setError: function(err) {
-        errorF(err);
+    setError: function(ctx, err) {
+        errorF(ctx.store, err);
+    },
+    message:  function(ctx, msg) {
+        console.log('message:' + JSON.stringify(msg));
+        // refresh state
+        AppActions.getState(ctx);
+    },
+    closing:  function(ctx, err) {
+        console.log('Closing:' + JSON.stringify(err));
+        wsStatusF(ctx.store, true);
     }
 };
 
-['changePinMode', 'changePinValue', 'deletePin',
- 'getState','addBundle', 'removeBundle','scheduleBundle','addListener',
- 'removeListener', 'triggerEvent'].forEach(function(x) {
+['changePinMode', 'changePinValue', 'deletePin', 'getState','addBundle',
+ 'removeBundle','scheduleBundle','addListener', 'removeListener',
+ 'triggerEvent'].forEach(function(x) {
      AppActions[x] = function() {
-            var args = Array.prototype.slice.call(arguments);
-            args.push(function(err, data) {
-                if (err) {
-                    errorF(err);
-                } else {
-                    updateF(data);
-                }
-            });
-            AppSession[x].apply(AppSession, args);
-        };
-    });
-
-
-AppSession.onmessage = function(msg) {
-    console.log('message:' + JSON.stringify(msg));
-    AppActions.getState();
-    //notifyF(msg);
-};
-
-AppSession.onclose = function(err) {
-    console.log('Closing:' + JSON.stringify(err));
-    wsStatusF(true);
-};
-
+         var args = Array.prototype.slice.call(arguments);
+         var ctx = args.shift();
+         args.push(function(err, data) {
+             if (err) {
+                 errorF(ctx.store, err);
+             } else {
+                 updateF(ctx.store, data);
+             }
+         });
+         ctx.session[x].apply(ctx.session, args);
+     };
+ });
 
 module.exports = AppActions;

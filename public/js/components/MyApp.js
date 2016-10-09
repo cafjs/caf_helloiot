@@ -1,32 +1,39 @@
 var React = require('react');
 var rB = require('react-bootstrap');
 var cE = React.createElement;
-var AppStore = require('../stores/AppStore');
-var AppActions = require('../actions/AppActions');
 var Pins = require('./Pins');
 var Bundles = require('./Bundles');
 var Events = require('./Events');
 var Listeners = require('./Listeners');
-var Power = require('./Power');
 var AppStatus = require('./AppStatus');
 var DisplayError = require('./DisplayError');
 
 var MyApp = {
     getInitialState: function() {
-        return AppStore.getState();
+        return this.props.ctx.store.getState();
     },
     componentDidMount: function() {
-        AppStore.addChangeListener(this._onChange);
+        if (!this.unsubscribe) {
+            this.unsubscribe = this.props.ctx.store
+                .subscribe(this._onChange.bind(this));
+            this._onChange();
+        }
     },
     componentWillUnmount: function() {
-        AppStore.removeChangeListener(this._onChange);
+        if (this.unsubscribe) {
+            this.unsubscribe();
+            this.unsubscribe = null;
+        }
     },
-    _onChange : function(ev) {
-        this.setState(AppStore.getState());
+    _onChange : function() {
+        if (this.unsubscribe) {
+            this.setState(this.props.ctx.store.getState());
+        }
     },
     render: function() {
         return cE("div", {className: "container-fluid"},
                   cE(DisplayError, {
+                      ctx: this.props.ctx,
                       error: this.state.error
                   }),
                   cE(rB.Panel, {
@@ -35,8 +42,7 @@ var MyApp = {
                                     cE(rB.Col, {sm:1, xs:1},
                                        cE(AppStatus, {
                                            isClosed: this.state.isClosed
-                                       })
-                                      ),
+                                       })),
                                     cE(rB.Col, {
                                         sm: 5,
                                         xs:10,
@@ -52,6 +58,7 @@ var MyApp = {
                   },
                      cE(rB.Panel, {header: "Pins"},
                         cE(Pins, {
+                            ctx: this.props.ctx,
                             pinNumber: this.state.pinNumber,
                             pinMode: this.state.pinMode,
                             pinOutputsValue: this.state.pinOutputsValue,
@@ -59,6 +66,7 @@ var MyApp = {
                         })),
                      cE(rB.Panel, {header: "Bundles"},
                         cE(Bundles, {
+                            ctx: this.props.ctx,
                             bundleEditor: this.state.bundleEditor,
                             bundleId: this.state.bundleId,
                             bundleMethods: this.state.iotMethodsMeta,
@@ -66,11 +74,13 @@ var MyApp = {
                         })),
                      cE(rB.Panel, {header: "Events"},
                         cE(Events, {
+                            ctx: this.props.ctx,
                             eventLabel: this.state.eventLabel,
                             eventDelay: this.state.eventDelay
                         })),
                      cE(rB.Panel, {header: "Listeners"},
                         cE(Listeners, {
+                            ctx: this.props.ctx,
                             listenerEditor: this.state.listenerEditor,
                             listenerId : this.state.listenerId,
                             listeners: this.state.listeners,

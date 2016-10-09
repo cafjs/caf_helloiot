@@ -11,31 +11,31 @@ var ListenerEditor = {
                 topic: editor.topic,
                 delay : editor.delay,
                 bundle : editor.bundle
-                
+
             }
         };
     },
-    
+
     handleTopic: function() {
         var newEditor = this.cloneProps();
         newEditor.listenerEditor.topic = this.refs.topic.getValue();
-        AppActions.setLocalState(newEditor);        
+        AppActions.setLocalState(this.props.ctx, newEditor);
     },
-    
+
     handleDelay: function() {
         var newEditor = this.cloneProps();
         newEditor.listenerEditor.delay = this.refs.delay.getValue();
-        AppActions.setLocalState(newEditor);        
+        AppActions.setLocalState(this.props.ctx, newEditor);
     },
-    
+
     handleBundle: function() {
         var newEditor = this.cloneProps();
         newEditor.listenerEditor.bundle = this.refs.bundle.getValue();
-        AppActions.setLocalState(newEditor);        
+        AppActions.setLocalState(this.props.ctx, newEditor);
     },
 
     doDismissEditor: function(ev) {
-        AppActions.setLocalState({
+        AppActions.setLocalState(this.props.ctx, {
             listenerEditor : null
         });
     },
@@ -43,22 +43,24 @@ var ListenerEditor = {
     doUpdate : function(ev) {
         var editor = this.props.listenerEditor;
         if (!editor.topic) {
-            AppActions.setError(new Error('Missing topic'));
+            AppActions.setError(this.props.ctx, new Error('Missing topic'));
             return;
         }
 
         var delay = parseInt(editor.delay);
         if (isNaN(delay)) {
-            AppActions.setError(new Error('Invalid delay ' + editor.delay));
+            AppActions.setError(this.props.ctx,
+                                new Error('Invalid delay ' + editor.delay));
             return;
         }
 
         if (editor.bundle && this.props.bundles[editor.bundle]) {
-            AppActions.addListener(this.props.listenerId, editor.topic,
-                                   editor.bundle, delay);
+            AppActions.addListener(this.props.ctx, this.props.listenerId,
+                                   editor.topic, editor.bundle, delay);
             this.doDismissEditor(ev);
         } else {
-            AppActions.setError(new Error('Invalid bundle ' + editor.bundle));
+            AppActions.setError(this.props.ctx,
+                                new Error('Invalid bundle ' + editor.bundle));
         }
     },
 

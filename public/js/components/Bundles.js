@@ -9,23 +9,23 @@ var Bundles = {
 
     doEdit: function(ev) {
         if (this.props.bundleId) {
-            AppActions.setLocalState({
+            AppActions.setLocalState(this.props.ctx, {
                 bundleEditor : {
                     id: this.props.bundleId,
                     content: []
                 }
             });
         } else {
-            AppActions.setError(new Error('Invalid bundle ID'));
+            AppActions.setError(this.props.ctx, new Error('Invalid bundle ID'));
         }
     },
 
     doDelete: function(ev) {
-        AppActions.removeBundle(this.props.bundleId);
+        AppActions.removeBundle(this.props.ctx, this.props.bundleId);
     },
 
     handleBundleId : function() {
-        AppActions.setLocalState({
+        AppActions.setLocalState(this.props.ctx, {
             bundleId: this.refs.bundleId.getValue()
         });
     },
@@ -36,12 +36,13 @@ var Bundles = {
             this.doEdit();
         }
     },
-    
+
     render: function() {
         var self = this;
         var bundleIds = Object.keys(this.props.bundles).sort();
         return cE("div", {className: "container-fluid"},
                   cE(BundleEditor, {
+                      ctx: this.props.ctx,
                       bundleMethods: this.props.bundleMethods,
                       bundleEditor: this.props.bundleEditor,
                       bundles: this.props.bundles
@@ -52,7 +53,6 @@ var Bundles = {
                            cE(rB.Input, {
                                type: 'text',
                                ref: 'bundleId',
-//                               label: 'Bundle Id',
                                value: this.props.bundleId,
                                onChange: this.handleBundleId,
                                onKeyDown: this.launchEditor,

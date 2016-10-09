@@ -10,25 +10,27 @@ var Listeners = {
 
     doEdit: function(ev) {
         if (this.props.listenerId) {
-            AppActions.setLocalState({
+            AppActions.setLocalState(this.props.ctx, {
                 listenerEditor : {
                 }
             });
         } else {
-            AppActions.setError(new Error('Invalid listener ID'));
+            AppActions.setError(this.props.ctx,
+                                new Error('Invalid listener ID'));
         }
     },
 
     doDelete: function(ev) {
         if (this.props.listenerId) {
-            AppActions.removeListener(this.props.listenerId);
+            AppActions.removeListener(this.props.ctx, this.props.listenerId);
         } else {
-            AppActions.setError(new Error('Invalid listener ID'));
+            AppActions.setError(this.props.ctx,
+                                new Error('Invalid listener ID'));
         }
     },
 
     handleListenerId : function() {
-        AppActions.setLocalState({
+        AppActions.setLocalState(this.props.ctx, {
             listenerId: this.refs.listenerId.getValue()
         });
     },
@@ -39,11 +41,12 @@ var Listeners = {
             this.doEdit();
         }
     },
-    
+
     render: function() {
         var self = this;
         return cE("div", {className: "container-fluid"},
                   cE(ListenerEditor, {
+                      ctx: this.props.ctx,
                       listenerEditor: this.props.listenerEditor,
                       listenerId: this.props.listenerId,
                       bundles: this.props.bundles

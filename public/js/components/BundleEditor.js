@@ -19,7 +19,7 @@ var BundleEditor = {
      * and `inProgress` is a partially edited command.
      */
     doDismissEditor: function(ev) {
-        AppActions.setLocalState({
+        AppActions.setLocalState(this.props.ctx, {
             bundleEditor : null
         });
     },
@@ -30,7 +30,8 @@ var BundleEditor = {
             bundle[x.method](x.after, x.args);
         });
         var bundleStr = bundle.__iot_freeze__().__iot_serialize__();
-        AppActions.addBundle(this.props.bundleEditor.id, bundleStr);
+        AppActions.addBundle(this.props.ctx, this.props.bundleEditor.id,
+                             bundleStr);
         this.doDismissEditor(ev);
     },
 
@@ -43,7 +44,7 @@ var BundleEditor = {
             (editor.inProgress.args.length === this.props
              .bundleMethods[editor.inProgress.method].length)) {
             var newContent = (editor.content || []).concat(editor.inProgress);
-            AppActions.setLocalState({
+            AppActions.setLocalState(this.props.ctx, {
                 bundleEditor : {
                     content: newContent,
                     id: editor.id,
@@ -52,7 +53,7 @@ var BundleEditor = {
             });
         } else {
             console.log('Invalid command');
-            AppActions.setError(new Error('Invalid command'));
+            AppActions.setError(this.props.ctx, new Error('Invalid command'));
         }
     },
 
@@ -61,7 +62,7 @@ var BundleEditor = {
             var bundleMethods = this.props.bundleMethods || {};
             var args = bundleMethods[eventKey];
             if (args) {
-                AppActions.setLocalState({
+                AppActions.setLocalState(this.props.ctx, {
                     bundleEditor : {
                         content: this.props.bundleEditor.content,
                         id: this.props.bundleEditor.id,
@@ -75,12 +76,12 @@ var BundleEditor = {
             } else {
                 var msg = 'Invalid bundle method for ' + eventKey;
                 console.log(msg);
-                AppActions.setError(new Error(msg));
-            }            
+                AppActions.setError(this.props.ctx, new Error(msg));
+            }
         } else {
             var errMsg = 'Invalid eventKey:' + eventKey;
             console.log(errMsg);
-            AppActions.setError(new Error(errMsg));
+            AppActions.setError(this.props.ctx, new Error(errMsg));
         }
     },
 
@@ -90,7 +91,7 @@ var BundleEditor = {
         if (!isNaN(delay)) {
             var inProgress = editor.inProgress || {};
             inProgress.after = delay;
-            AppActions.setLocalState({
+            AppActions.setLocalState(this.props.ctx, {
                 bundleEditor : {
                     content: editor.content,
                     id: editor.id,
@@ -100,7 +101,7 @@ var BundleEditor = {
         } else {
             var errMsg = 'Invalid delay:' + this.refs.commandDelay.getValue();
             console.log(errMsg);
-            AppActions.setError(new Error(errMsg));
+            AppActions.setError(this.props.ctx, new Error(errMsg));
         }
     },
 
@@ -109,7 +110,7 @@ var BundleEditor = {
         var inProgress = editor.inProgress || {};
         inProgress.args =  inProgress.args || [];
         inProgress.args[index] = value;
-        AppActions.setLocalState({
+        AppActions.setLocalState(this.props.ctx, {
             bundleEditor : {
                 content: editor.content,
                 id: editor.id,
@@ -117,7 +118,7 @@ var BundleEditor = {
             }
         });
     },
-    
+
     render : function() {
         var editor = this.props.bundleEditor;
         return cE(rB.Modal,{show: editor && true,
@@ -158,13 +159,13 @@ var BundleEditor = {
                           ),
                         cE(rB.Col, {sm:4, xs:6},
                            cE(rB.Button, {onClick: this.doAddCommand}, "Add")
-                          )                        
+                          )
                        ),
                      cE(BundleDisplay, {
                          id :  editor && editor.id || null,
                          content :  editor && editor.content || [],
                          bundleMethods: this.props.bundleMethods
-                     })                    
+                     })
                     ),
                   cE(rB.Modal.Footer, null,
                      cE(rB.Button, {onClick: this.doUpdate}, "Done"),

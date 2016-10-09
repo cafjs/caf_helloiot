@@ -5,31 +5,31 @@ var AppActions = require('../actions/AppActions');
 
 var Events = {
     handleEventDelay: function() {
-        AppActions.setLocalState({
+        AppActions.setLocalState(this.props.ctx, {
             eventDelay: this.refs.eventDelay.getValue()
         });
     },
     handleEventLabel: function() {
-        AppActions.setLocalState({
+        AppActions.setLocalState(this.props.ctx, {
             eventLabel: this.refs.eventLabel.getValue()
         });
     },
     doRun: function() {
         var delay = parseInt(this.refs.eventDelay.getValue());
         if (isNaN(delay)) {
-            AppActions.setError(new Error('Invalid delay:' +
-                                          this.refs.eventDelay
-                                          .getValue()));
+            AppActions.setError(this.props.ctx,
+                                new Error('Invalid delay:' +
+                                          this.refs.eventDelay.getValue()));
         } else {
             var label  = this.refs.eventLabel.getValue();
             if (label) {
-                AppActions.triggerEvent(label, delay);
+                AppActions.triggerEvent(this.props.ctx, label, delay);
             } else {
-                AppActions.setError(new Error('Missing label'));
-                    
+                AppActions.setError(this.props.ctx, new Error('Missing label'));
+
             }
         }
-    },    
+    },
     launchEvent : function(ev) {
         if (ev.key === 'Enter') {
             this.doRun();
@@ -46,7 +46,7 @@ var Events = {
                             onChange: this.handleEventLabel,
                             placeholder: 'Topic'
                         })
-                       ), 
+                       ),
                      cE(rB.Col, {sm:4, xs:12},
                         cE(rB.Input, {
                             type: 'text',

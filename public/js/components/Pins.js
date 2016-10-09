@@ -20,7 +20,7 @@ var renderInputs = function(pinMode, pinInputsValue) {
     }));
 };
 
-var renderOutputs = function(pinMode, pinOutputsValue) {
+var renderOutputs = function(ctx, pinMode, pinOutputsValue) {
     var sortedKeys = Object.keys(pinMode)
             .filter(function(x) {
                 return !pinMode[x].input && pinMode[x].initialState;
@@ -31,12 +31,12 @@ var renderOutputs = function(pinMode, pinOutputsValue) {
     return cE(rB.ButtonGroup, null, sortedKeys.map(function(x, j) {
         var onSelect = function(ev, selectedKey) {
             if (selectedKey === 'HIGH') {
-                AppActions.changePinValue(x, true);
+                AppActions.changePinValue(ctx, x, true);
             } else if (selectedKey === 'LOW') {
-                AppActions.changePinValue(x, false);
+                AppActions.changePinValue(ctx, x, false);
             } else {
                 throw new Error('Bug: Invalid Key' + selectedKey);
-            }            
+            }
         };
         var color = (typeof pinOutputsValue[x] === 'boolean' ?
                      (pinOutputsValue[x] ? 'danger': 'primary') :
@@ -54,12 +54,12 @@ var renderOutputs = function(pinMode, pinOutputsValue) {
             }, value);
         }));
     }));
-};       
+};
 
 var renderFloating =  function(pinMode) {
     var sortedKeys = Object.keys(pinMode)
             .filter(function(x) {
-                return (!pinMode[x].input && !pinMode[x].initialState); 
+                return (!pinMode[x].input && !pinMode[x].initialState);
             }).sort(function(a, b) {
                 return a - b;
             });
@@ -70,17 +70,19 @@ var renderFloating =  function(pinMode) {
 
 var Pins = {
     handlePinNumber: function() {
-        AppActions.setLocalState({
+        AppActions.setLocalState(this.props.ctx, {
             pinNumber: this.refs.pinNumber.getValue()
         });
     },
     doPinMode : function(input, floating) {
         var pin = parseInt(this.refs.pinNumber.getValue());
         if (isNaN(pin)) {
-            AppActions.setError(new Error('Invalid Pin Number:' +
+            AppActions.setError(this.props.ctx,
+                                new Error('Invalid Pin Number:' +
                                           this.refs.pinNumber.getValue()));
         } else {
-            AppActions.changePinMode(pin, input, floating || false);
+            AppActions.changePinMode(this.props.ctx, pin, input,
+                                     floating || false);
         }
     },
     doInput: function() {
@@ -95,10 +97,11 @@ var Pins = {
     doDelete: function() {
         var pin = parseInt(this.refs.pinNumber.getValue());
         if (isNaN(pin)) {
-            AppActions.setError(new Error('Invalid Pin Number:' +
+            AppActions.setError(this.props.ctx,
+                                new Error('Invalid Pin Number:' +
                                           this.refs.pinNumber.getValue()));
         } else {
-            AppActions.deletePin(pin);
+            AppActions.deletePin(this.props.ctx, pin);
         }
     },
     render: function() {
@@ -132,8 +135,8 @@ var Pins = {
                    cE(rB.Row, null,
                       cE(rB.Col, {sm:4, xs:4}, 'Outputs'),
                       cE(rB.Col, {sm:8, xs:9},
-                           renderOutputs(this.props.pinMode,
-                                   this.props.pinOutputsValue))
+                         renderOutputs(this.props.ctx, this.props.pinMode,
+                                       this.props.pinOutputsValue))
                      ),
                    cE(rB.Row, null,
                       cE(rB.Col, {sm:4, xs:4}, 'Floating Outputs'),
