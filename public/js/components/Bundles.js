@@ -47,7 +47,7 @@ var Bundles = {
                       bundleEditor: this.props.bundleEditor,
                       bundles: this.props.bundles
                   }),
-                  cE(rB.Grid, null,
+                  cE(rB.Grid, {fluid: true},
                      cE(rB.Row, null,
                         cE(rB.Col, {sm:4, xs:12},
                            cE(rB.Input, {
