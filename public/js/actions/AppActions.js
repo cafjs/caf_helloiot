@@ -39,35 +39,34 @@ var wsStatusF =  function(store, isClosed) {
 };
 
 var AppActions = {
-    initServer: function(ctx, initialData) {
+    initServer(ctx, initialData) {
         updateF(ctx.store, initialData);
     },
-    init: function(ctx, cb) {
-        var tok =  caf_cli.extractTokenFromURL(window.location.href);
-        ctx.session.hello(ctx.session.getCacheKey(), tok, function(err, data) {
-            if (err) {
-                errorF(ctx.store, err);
-            } else {
-                updateF(ctx.store, data);
-            }
-            cb(err, data);
-        });
+    async init(ctx) {
+        try {
+            var tok =  caf_cli.extractTokenFromURL(window.location.href);
+            var data = await ctx.session.hello(ctx.session.getCacheKey(), tok)
+                    .getPromise();
+            updateF(ctx.store, data);
+        } catch (err) {
+            errorF(ctx.store, err);
+        }
     },
-    setLocalState: function(ctx, data) {
+    setLocalState(ctx, data) {
         updateF(ctx.store, data);
     },
-    resetError: function(ctx) {
+    resetError(ctx) {
         errorF(ctx.store, null);
     },
-    setError: function(ctx, err) {
+    setError(ctx, err) {
         errorF(ctx.store, err);
     },
-    message:  function(ctx, msg) {
+    message(ctx, msg) {
         console.log('message:' + JSON.stringify(msg));
         // refresh state
         AppActions.getState(ctx);
     },
-    closing:  function(ctx, err) {
+    closing(ctx, err) {
         console.log('Closing:' + JSON.stringify(err));
         wsStatusF(ctx.store, true);
     }
@@ -76,17 +75,16 @@ var AppActions = {
 ['changePinMode', 'changePinValue', 'deletePin', 'getState','addBundle',
  'removeBundle','scheduleBundle','addListener', 'removeListener',
  'triggerEvent'].forEach(function(x) {
-     AppActions[x] = function() {
+     AppActions[x] = async function() {
          var args = Array.prototype.slice.call(arguments);
          var ctx = args.shift();
-         args.push(function(err, data) {
-             if (err) {
-                 errorF(ctx.store, err);
-             } else {
-                 updateF(ctx.store, data);
-             }
-         });
-         ctx.session[x].apply(ctx.session, args);
+         try {
+             var data = await ctx.session[x].apply(ctx.session, args)
+                     .getPromise();
+             updateF(ctx.store, data);
+         } catch (err) {
+             errorF(ctx.store, err);
+         }
      };
  });
 

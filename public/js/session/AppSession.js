@@ -5,9 +5,13 @@ exports.connect = function(ctx, cb) {
 
     var session = new cli.Session(window.location.href);
 
-    session.onopen = function() {
+    session.onopen = async function() {
         console.log('open session');
-        AppActions.init(ctx, cb);
+        try {
+            cb(null, await AppActions.init(ctx));
+        } catch (err) {
+            cb(err);
+        }
     };
 
     session.onmessage = function(msg) {

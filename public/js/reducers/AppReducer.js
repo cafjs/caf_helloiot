@@ -1,5 +1,4 @@
 var AppConstants = require('../constants/AppConstants');
-var objectAssign = require('object-assign');
 
 var lateBundle = function(state) {
     if (state.lastLateBundleDismissed !== state.lastBundleIndex) {
@@ -22,7 +21,7 @@ var AppReducer = function(state, action) {
         switch(action.type) {
         case AppConstants.APP_UPDATE:
         case AppConstants.APP_NOTIFICATION:
-            var newState = objectAssign({}, state, action.state);
+            var newState = Object.assign({}, state, action.state);
             if (lateBundle(newState)) {
                 var extra = {
                     lastLateBundleDismissed: newState.lastBundleIndex,
@@ -30,14 +29,14 @@ var AppReducer = function(state, action) {
                                       'was ignored by the device. Please, ' +
                                       'increase the delay')
                 };
-                return objectAssign(newState, extra);
+                return Object.assign(newState, extra);
             } else {
                 return newState;
             }
         case AppConstants.APP_ERROR:
-            return objectAssign({}, state, {error: action.error});
+            return Object.assign({}, state, {error: action.error});
         case AppConstants.WS_STATUS:
-            return objectAssign({}, state, {isClosed: action.isClosed});
+            return Object.assign({}, state, {isClosed: action.isClosed});
         default:
             return state;
         }
