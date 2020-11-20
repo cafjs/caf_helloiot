@@ -25,7 +25,7 @@ var BundleEditor = {
     },
 
     doUpdate : function(ev) {
-        var bundle = bundles.newInstance(this.props.bundleMethods);
+        var bundle = bundles.create(this.props.bundleMethods);
         this.props.bundleEditor.content.forEach(function(x) {
             bundle[x.method](x.after, x.args);
         });
