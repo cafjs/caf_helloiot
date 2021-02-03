@@ -1,52 +1,52 @@
-var AppConstants = require('../constants/AppConstants');
-var json_rpc = require('caf_transport').json_rpc;
-var caf_cli =  require('caf_cli');
+const AppConstants = require('../constants/AppConstants');
+const json_rpc = require('caf_transport').json_rpc;
+const caf_cli =  require('caf_cli');
 
-var updateF = function(store, state) {
-    var d = {
+const updateF = function(store, state) {
+    const d = {
         type: AppConstants.APP_UPDATE,
         state: state
     };
     store.dispatch(d);
 };
 
-var errorF =  function(store, err) {
-    var d = {
+const errorF =  function(store, err) {
+    const d = {
         type: AppConstants.APP_ERROR,
         error: err
     };
     store.dispatch(d);
 };
 
-var notifyF = function(store, message) {
-    var getNotifData = function(msg) {
+const notifyF = function(store, message) {
+    const getNotifData = function(msg) {
         return json_rpc.getMethodArgs(msg)[0];
     };
 
-    var d = {
+    const d = {
         type: AppConstants.APP_NOTIFICATION,
         state: getNotifData(message)
     };
     store.dispatch(d);
 };
 
-var wsStatusF =  function(store, isClosed) {
-    var d = {
+const wsStatusF =  function(store, isClosed) {
+    const d = {
         type: AppConstants.WS_STATUS,
         isClosed: isClosed
     };
     store.dispatch(d);
 };
 
-var AppActions = {
+const AppActions = {
     initServer(ctx, initialData) {
         updateF(ctx.store, initialData);
     },
     async init(ctx) {
         try {
-            var tok =  caf_cli.extractTokenFromURL(window.location.href);
-            var data = await ctx.session.hello(ctx.session.getCacheKey(), tok)
-                    .getPromise();
+            const tok =  caf_cli.extractTokenFromURL(window.location.href);
+            const data = await ctx.session.hello(ctx.session.getCacheKey(), tok)
+                .getPromise();
             updateF(ctx.store, data);
         } catch (err) {
             errorF(ctx.store, err);
@@ -76,10 +76,10 @@ var AppActions = {
  'removeBundle','scheduleBundle','addListener', 'removeListener',
  'triggerEvent'].forEach(function(x) {
      AppActions[x] = async function() {
-         var args = Array.prototype.slice.call(arguments);
-         var ctx = args.shift();
+         const args = Array.prototype.slice.call(arguments);
+         const ctx = args.shift();
          try {
-             var data = await ctx.session[x].apply(ctx.session, args)
+             const data = await ctx.session[x].apply(ctx.session, args)
                      .getPromise();
              updateF(ctx.store, data);
          } catch (err) {

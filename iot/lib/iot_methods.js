@@ -16,12 +16,12 @@ limitations under the License.
 */
 
 'use strict';
-var caf_iot = require('caf_iot');
+const caf_iot = require('caf_iot');
 
 exports.methods = {
     async __iot_setup__() {
         // value of 'index' from last run downloaded from the cloud
-        var lastIndex = this.toCloud.get('index');
+        const lastIndex = this.toCloud.get('index');
         this.state.index = (lastIndex ? lastIndex : 0);
         return [];
     },
@@ -39,17 +39,17 @@ exports.methods = {
 
         this.toCloud.set('index', this.state.index);
         this.state.index = this.state.index + 1;
-        var now = (new Date()).getTime();
+        const now = (new Date()).getTime();
         this.$.log && this.$.log.debug(now + ' loop: ' + this.state.index);
 
         return [];
     },
 
     async setPin(pin, value) {
-        var now = (new Date()).getTime();
+        const now = (new Date()).getTime();
         this.$.log && this.$.log.debug(now + ' setPin:' + pin + ' value:' +
                                        value);
-        var pins = {};
+        const pins = {};
         pins[pin] = value;
         this.$.gpio.writeMany(pins);
         return [];
